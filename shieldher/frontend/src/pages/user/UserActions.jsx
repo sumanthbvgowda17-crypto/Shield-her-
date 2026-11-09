@@ -4,6 +4,7 @@ import BottomNav from '../../components/BottomNav';
 import { Share2, Phone, Map, Mic, Volume2, Video, XCircle, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReportIncidentModal from '../../components/ReportIncidentModal';
+import { API_ENDPOINTS } from '../../config/api';
 
 export default function UserActions() {
   const [fakeCall, setFakeCall] = useState(false);
@@ -35,7 +36,7 @@ export default function UserActions() {
 
     const sendLocation = async (latitude, longitude) => {
       try {
-        const res = await fetch('http://localhost:5001/api/actions/share-location', {
+        const res = await fetch(API_ENDPOINTS.ACTIONS_SHARE_LOCATION, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ lat: latitude, lng: longitude })
@@ -68,7 +69,7 @@ export default function UserActions() {
   const handleFakeCall = async () => {
     setFakeCall(true);
     try {
-      await fetch('http://localhost:5001/api/actions/call', {
+      await fetch(API_ENDPOINTS.ACTIONS_CALL, {
         method: 'POST'
       });
     } catch(e) {

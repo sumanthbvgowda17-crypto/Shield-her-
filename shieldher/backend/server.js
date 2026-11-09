@@ -22,7 +22,8 @@ const defaultAllowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
-  'http://127.0.0.1:3000'
+  'http://127.0.0.1:3000',
+  'https://shield-her-tau.vercel.app'
 ];
 
 const envAllowedOrigins = process.env.ALLOWED_ORIGINS 
@@ -31,19 +32,27 @@ const envAllowedOrigins = process.env.ALLOWED_ORIGINS
 
 const allowedOrigins = [...defaultAllowedOrigins, ...envAllowedOrigins];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    
+    // Check exact match, vercel preview subdomains, or non-production mode
+    const isExplicitlyAllowed = allowedOrigins.indexOf(origin) !== -1;
+    const isVercelDomain = origin.endsWith('.vercel.app');
+    
+    if (isExplicitlyAllowed || isVercelDomain || process.env.NODE_ENV !== 'production') {
       return callback(null, true);
     }
-    return callback(new Error('Blocked by CORS policy: Unauthorized origin.'));
+    return callback(new Error(`Blocked by CORS policy: Origin ${origin} is not authorized.`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // 3. Strict Payload Size Limits (Mitigate DoS & Buffer Overflow)
 app.use(express.json({ limit: '100kb' }));
@@ -107,6 +116,12 @@ app.get('/api/health', (req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`\x1b[35m[ShieldHer Backend]\x1b[0m Secure Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-});
+
+// Only start the HTTP listener if not running in a Vercel serverless environment
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`\x1b[35m[ShieldHer Backend]\x1b[0m Secure Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  });
+}
+
+module.exports = app;

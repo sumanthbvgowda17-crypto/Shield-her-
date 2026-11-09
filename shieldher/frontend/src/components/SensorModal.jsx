@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Navigation, Mic, Camera, Activity, ShieldAlert, Cpu } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function SensorModal({ sensor, onClose }) {
   if (!sensor) return null;
@@ -45,7 +46,7 @@ export default function SensorModal({ sensor, onClose }) {
     const base64Image = canvas.toDataURL('image/jpeg', 0.8);
     
     try {
-      await fetch('http://localhost:5001/api/sos/camera', {
+      await fetch(API_ENDPOINTS.SOS_CAMERA, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ device_id: 'user-phone-123', image: base64Image })
@@ -123,7 +124,7 @@ export default function SensorModal({ sensor, onClose }) {
             <button 
               onClick={async () => {
                 try {
-                  await fetch('http://localhost:5001/api/sos/gps', {
+                  await fetch(API_ENDPOINTS.SOS_GPS, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -288,7 +289,7 @@ export default function SensorModal({ sensor, onClose }) {
             <button 
               onClick={async () => {
                 try {
-                  await fetch('http://localhost:5001/api/sos/motion', {
+                  await fetch(API_ENDPOINTS.SOS_MOTION, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { saveIncident, updateIncidentStatus } from '../supabase/incidentsService';
+import { API_ENDPOINTS } from '../config/api';
 
 export const useSOSTrigger = () => {
   const [isSOSActive, setIsSOSActive] = useState(false);
@@ -59,7 +60,7 @@ export const useSOSTrigger = () => {
 
       // 2. Transmit to backend for Twilio SMS dispatch
       try {
-        const res = await fetch('http://localhost:5001/api/sos', { 
+        const res = await fetch(API_ENDPOINTS.SOS, { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -137,7 +138,7 @@ export const useSOSTrigger = () => {
     }
 
     try {
-      await fetch('http://localhost:5001/api/sos/resolve', {
+      await fetch(API_ENDPOINTS.SOS_RESOLVE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ device_id: 'user-phone-123' })
