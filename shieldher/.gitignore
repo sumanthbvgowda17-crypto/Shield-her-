@@ -1,0 +1,38 @@
+# Dependency directories (recursive)
+**/node_modules/
+node_modules/
+
+# Production build artifacts (recursive)
+**/dist/
+**/dist-ssr/
+**/build/
+dist/
+
+# Environment files and credentials (STRICTLY EXCLUDED AT ALL DEPTHS)
+**/.env
+**/.env.*
+**/*.env
+.env
+.env.*
+*.env
+!**/.env.example
+!.env.example
+
+# Logs
+**/logs/
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
